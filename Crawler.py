@@ -16,7 +16,7 @@ import time
 
 from bs4 import BeautifulSoup
 
-db = pymysql.connect("localhost", "root", "123456", "psnine")
+db = pymysql.connect("123.206.41.36", "root", "123456", "psnine")
 
 cursor = db.cursor()
 
@@ -36,13 +36,15 @@ for i in range(int(totalpage.string)):
     a = i + 1
     indexpage = request.Request("http://psnine.com/psngame?page=" + str(a))
 
-    indexpage2 = request.urlopen(mainpage).read().decode('utf-8')
+    indexpage2 = request.urlopen(indexpage).read().decode('utf-8')
 
     indexsoup = BeautifulSoup(indexpage2, 'html.parser')
 
     nextpage = indexsoup.find_all('td', class_='pdd15')
 
     nextpage1 = indexsoup.find_all('td', class_='pd1015 title lh180')
+
+    print("------------------------------第" + str(a) + "页------------------------------")
 
     print(nextpage.__len__())
 
@@ -51,7 +53,7 @@ for i in range(int(totalpage.string)):
 
     for i in range(len(nextpage)):
 
-        print(i)
+        print("------------------------------本页第" + str(i) + "个游戏------------------------------")
 
         gamepage = nextpage[i].find('a')['href']
 
@@ -59,8 +61,8 @@ for i in range(int(totalpage.string)):
 
         print(gamepage)
 
-        if(gamepage == "http://psnine.com/psngame/17144"):
-            continue
+        # if(gamepage == "http://psnine.com/psngame/17144"):
+        #     continue
 
         page = request.Request(gamepage)
 
@@ -84,7 +86,8 @@ for i in range(int(totalpage.string)):
                 print(real_name)
                 trophy_type = trs[i].find_all('td')[1].find('a')['class'][0].split('-')[1]
                 print(trophy_type)
-                name = trs[i].find_all('em', class_='text-gray')[0]
+                name = trs[i].find_all('em')
+                name = name[len(name) - 2]
                 trophy_namestring = name.string
                 rare = trs[i].find_all('td', class_='twoge')[0]
                 trophy_rarestring = "0"
@@ -105,7 +108,7 @@ for i in range(int(totalpage.string)):
                     # 发生错误时回滚
                     db.rollback()
                 # KafkaFactory.send(namestring + "jinxLbj" + rarestring)
-                # print("send-over")
+                print("send-over")
 
 db.close()
 

@@ -1,7 +1,7 @@
 import pymysql
 
 # 打开数据库连接
-db = pymysql.connect("localhost", "root", "123456", "psnine")
+db = pymysql.connect("123.206.41.36", "root", "123456", "psnine")
 
 # 使用cursor()方法获取操作游标
 cursor = db.cursor()
